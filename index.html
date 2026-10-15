@@ -59,7 +59,7 @@
       </div>
 
       <button onclick="initiateScan()" class="w-full bg-cyber text-dark font-bold py-4 rounded-xl hover:bg-cyber/90 transition-all font-mono tracking-widest uppercase text-sm mt-2 relative overflow-hidden group">
-        <span class="relative z-10">Sistemi Başlat</span>
+        <span class="relative z-10">Yalan Testini başlat</span>
       </button>
     </section>
 
@@ -67,7 +67,7 @@
     <section id="step-scan" class="hidden flex-col items-center justify-center space-y-6 py-4">
       <div class="text-center w-full">
         <h2 class="text-cyber text-lg font-mono font-bold animate-pulse">ONAY GEREKİYOR</h2>
-        <p class="text-[11px] text-white/50 font-mono mt-1">Parmağınızı tarayıcıya basılı tutarak kalibrasyonu sağlayın.</p>
+        <p class="text-[11px] text-white/50 font-mono mt-1">Parmağınızı tarayıcıya basılı tutarak teste baslayin.</p>
       </div>
       <div id="scanner-pad" class="fingerprint-container cursor-pointer" onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold(event)" ontouchend="endHold(event)">
         <svg class="w-16 h-16 text-cyber/50 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.46 6.03 1.52.25.13.36.43.23.68-.09.18-.26.27-.46.27zm-11.6 3.19C4.54 9.17 3.5 11.08 3.5 13.52c0 .28-.22.5-.5.5s-.5-.22-.5-.5C2.5 10.74 3.66 8.57 5.56 6.88c.21-.19.53-.17.72.04.19.21.17.53-.07.74zM20.5 13.52c0-2.61-1.15-4.66-3.41-6.11-.23-.15-.54-.08-.69.15-.15.23-.08.54.15.69 1.94 1.25 2.95 3.02 2.95 5.27 0 .28.22.5.5.5s.5-.22.5-.5zM12.01 6c-3.13 0-5.91 1.76-7.29 4.62-.12.25-.42.36-.67.24-.25-.12-.36-.42-.24-.67C5.41 6.86 8.54 4.9 12.01 4.9c3.48 0 6.64 1.96 8.24 5.3.12.25.01.55-.24.67-.25.12-.55.01-.67-.24-1.39-2.87-4.18-4.63-7.33-4.63zm3.76 13.91c-.34-.41-.57-1.17-.67-2.31-.05-.59-.14-1.19-.38-1.74-.46-1.04-1.35-1.78-2.71-1.78-1.36 0-2.25.75-2.71 1.78-.23.54-.33 1.13-.38 1.74-.1 1.14-.33 1.9-.67 2.31-.22.26-.2.65.06.87.26.22.65.2.87-.06.51-.59.81-1.57.94-2.88.04-.5.12-.99.31-1.41.28-.62.8-1.04 1.58-1.04.78 0 1.29.42 1.58 1.04.19.42.27.91.31 1.41.13 1.32.43 2.29.94 2.88.26.26.65.23.87-.03.22-.27.19-.66-.04-.88zm-3.76-11.83c-2.3 0-4.32 1.4-5.11 3.52-.1.26-.39.39-.65.29-.26-.1-.39-.39-.29-.65.95-2.54 3.37-4.21 6.05-4.21 2.68 0 5.1 1.67 6.05 4.21.1.26-.03.55-.29.65-.26.1-.55-.03-.65-.29-.79-2.12-2.81-3.52-5.11-3.52zm0 3c-1.35 0-2.59.83-3.14 2.09-.11.25-.41.37-.66.26-.25-.11-.37-.41-.26-.66.69-1.58 2.24-2.62 3.96-2.62s3.27 1.04 3.96 2.62c.11.25-.01.55-.26.66-.25.11-.55-.01-.66-.26-.55-1.26-1.79-2.09-3.14-2.09z"/></svg>
@@ -90,7 +90,7 @@
       <div class="pt-4 border-t border-white/10">
         <label class="block text-[10px] text-cyber font-mono uppercase mb-2">Hikayeni Anlat</label>
         <textarea id="inp-story" rows="2" class="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-cyber/50 resize-none" placeholder="Gerçek neydi? Açıklamanı yaz..."></textarea>
-        <button onclick="commitLog()" class="w-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs py-3 rounded-xl mt-3 transition-colors border border-white/5">Kaydet & Kapat</button>
+        <button onclick="commitLog()" class="w-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs py-3 rounded-xl mt-3 transition-colors border border-white/5">Yeniden dene</button>
       </div>
     </section>
   </main>
@@ -99,7 +99,7 @@
     <div class="w-full max-w-2xl bg-dark/80 border border-cyber/30 rounded-2xl p-6 flex flex-col max-h-[90vh]">
       <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
         <div>
-          <h2 class="text-cyber font-mono font-bold text-lg">GİZLİ LOGLAR</h2>
+          <h2 class="text-cyber font-mono font-bold text-lg">LOGLAR</h2>
           <p class="text-xs text-white/40 font-mono">Toplam Kayıt: <span id="log-count">0</span></p>
         </div>
         <button onclick="closeAdmin()" class="text-white/50 hover:text-white font-mono text-xl">✕</button>
@@ -113,7 +113,7 @@
 
   <script>
     let state = { name: "", question: "", isLie: false, aiResponse: "", holdInterval: null, holdProgress: 0 };
-    const logMessages = [ "> Sensörler uyanıyor...", "> Veriler toplanıyor...", "> Analiz başladı...", "> Doğruluk payı ölçülüyor..." ];
+    const logMessages = [ "> Sensörlerden veri cekiliyor...", "> Veriler toplanıyor...", "> Analiz başladı...", "> Doğruluk payı ölçülüyor..." ];
 
     function initiateScan() {
       const nameInp = document.getElementById('inp-name').value.trim();
@@ -173,9 +173,9 @@
         titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase text-cyber";
       }
 
-      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Yapay zeka analiz ediyor...</span>`;
+      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Yapay zeka cevap verecek(bekle cano)...</span>`;
 
-      const prompt = encodeURIComponent(`Sen komik bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Cümlesi: "${state.question}". Kararım: ${state.isLie ? 'YALAN' : 'DOĞRU'}. Bu karara komik ve kısa tek bir cümle ile Türkçe açıklama getir.`);
+      const prompt = encodeURIComponent(`Sen komik bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Cümlesi: "${state.question}". Kararım: ${state.isLie ? 'YALAN' : 'DOĞRU'}. Bu karara yeni nesil genç türünden absürt komik ve kısa tek bir cümle ile Türkçe açıklama getir.`);
       
       try {
         const res = await fetch(`https://text.pollinations.ai/${prompt}`);
