@@ -94,12 +94,13 @@
       </div>
     </section>
   </main>
-    <!-- GİZLİ ADMİN PANELİ -->
+    
+        <!-- GİZLİ ADMİN PANELİ -->
   <div id="admin-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
     <div class="w-full max-w-2xl bg-dark/80 border border-cyber/30 rounded-2xl p-6 flex flex-col max-h-[90vh]">
       <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
         <div>
-          <h2 class="text-cyber font-mono font-bold text-lg">LOGLAR</h2>
+          <h2 class="text-cyber font-mono font-bold text-lg">GİZLİ BULUT LOGLARI</h2>
           <p class="text-xs text-white/40 font-mono">Toplam Kayıt: <span id="log-count">0</span></p>
         </div>
         <button onclick="closeAdmin()" class="text-white/50 hover:text-white font-mono text-xl">✕</button>
@@ -112,8 +113,11 @@
   </div>
 
   <script>
+    // Sınıfına özel benzersiz bulut havuzu ID'si
+    const CLOUD_DB_URL = "https://kvdb.io/4y9X6p1kG9xN7Z3mQ8W2vL/prank_logs";
+
     let state = { name: "", question: "", isLie: false, aiResponse: "", holdInterval: null, holdProgress: 0 };
-    const logMessages = [ "> Sensörlerden veri cekiliyor...", "> Veriler toplanıyor...", "> Analiz başladı...", "> Doğruluk payı ölçülüyor..." ];
+    const logMessages = [ "> Sensörler uyanıyor...", "> Veriler toplanıyor...", "> Analiz başladı...", "> Doğruluk payı ölçülüyor..." ];
 
     function initiateScan() {
       const nameInp = document.getElementById('inp-name').value.trim();
@@ -173,9 +177,9 @@
         titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase text-cyber";
       }
 
-      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Yapay zeka cevap verecek az bekle cano...</span>`;
+      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Yapay zeka analiz ediyor...</span>`;
 
-      const prompt = encodeURIComponent(`Sen komik bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Cümlesi: "${state.question}". Kararım: ${state.isLie ? 'YALAN' : 'DOĞRU'}. Bu karara yeni nesil genç türünden absürt komik ve kısa tek bir cümle ile Türkçe açıklama getir.`);
+      const prompt = encodeURIComponent(`Sen komik bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Cümlesi: "${state.question}". Kararım: ${state.isLie ? 'YALAN' : 'DOĞRU'}. Bu karara komik ve kısa tek bir cümle ile Türkçe açıklama getir.`);
       
       try {
         const res = await fetch(`https://text.pollinations.ai/${prompt}`);
@@ -189,18 +193,44 @@
       }
     }
 
-    function commitLog() {
+    // --- BULUTA KAYDETME FONKSİYONU ---
+    async function commitLog() {
       const story = document.getElementById('inp-story').value.trim();
-      const payload = { name: state.name, question: state.question, verdict: state.isLie ? "YALAN" : "DOĞRU", aiRes: state.aiResponse, defense: story || "Açıklama yok" };
-      const existingLogs = JSON.parse(localStorage.getItem('aegis_logs') || '[]');
-      existingLogs.unshift(payload);
-      localStorage.setItem('aegis_logs', JSON.stringify(existingLogs));
+      const payload = { 
+        name: state.name, 
+        question: state.question, 
+        verdict: state.isLie ? "YALAN" : "DOĞRU", 
+        aiRes: state.aiResponse, 
+        defense: story || "Açıklama yok",
+        date: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      try {
+        // Önce buluttaki mevcut logları çek
+        let existingLogs = [];
+        const getRes = await fetch(CLOUD_DB_URL);
+        if (getRes.ok) {
+          existingLogs = await getRes.json();
+        }
+        
+        // Yeni logu başa ekle
+        existingLogs.unshift(payload);
+
+        // Buluta geri kaydet
+        await fetch(CLOUD_DB_URL, {
+          method: 'POST',
+          body: JSON.stringify(existingLogs)
+        });
+      } catch (e) {
+        console.log("Bulut kaydı hatası:", e);
+      }
 
       document.getElementById('inp-name').value = "";
       document.getElementById('inp-query').value = "";
       document.getElementById('inp-story').value = "";
       document.getElementById('step-result').classList.add('hidden');
       document.getElementById('step-init').classList.remove('hidden');
+      alert("Yanıtın sisteme başarıyla işlendi!");
     }
 
     function speakResult(text) {
@@ -224,15 +254,35 @@
 
     function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-    function renderAdminLogs() {
-      const logs = JSON.parse(localStorage.getItem('aegis_logs') || '[]');
-      document.getElementById('log-count').innerText = logs.length;
+    // --- BULUTTAN LOGLARI OKUMA ---
+    async function renderAdminLogs() {
       const container = document.getElementById('log-container');
-      if (logs.length === 0) { container.innerHTML = `<div class="text-white/30 text-center py-4">Veri yok.</div>`; return; }
+      container.innerHTML = `<div class="text-cyber text-center py-4 font-mono animate-pulse">Bulut veritabanı taranıyor...</div>`;
+      
+      let logs = [];
+      try {
+        const res = await fetch(CLOUD_DB_URL);
+        if (res.ok) {
+          logs = await res.json();
+        }
+      } catch (e) {
+        console.log("Log çekme hatası:", e);
+      }
+
+      document.getElementById('log-count').innerText = logs.length;
+
+      if (!logs || logs.length === 0) { 
+        container.innerHTML = `<div class="text-white/30 text-center py-4">Henüz kaydedilmiş bulut verisi yok.</div>`; 
+        return; 
+      }
+
       container.innerHTML = logs.map(log => `
         <div class="bg-black/50 border border-white/5 p-4 rounded-xl relative">
           <div class="absolute top-0 left-0 w-1 h-full ${log.verdict === 'YALAN' ? 'bg-red-500' : 'bg-cyber'}"></div>
-          <span class="font-bold text-white text-sm ml-2">${log.name}</span>
+          <div class="flex justify-between items-center ml-2">
+            <span class="font-bold text-white text-sm">${log.name}</span>
+            <span class="text-[10px] text-white/40">${log.date || ''}</span>
+          </div>
           <div class="space-y-1 ml-2 mt-1">
             <p class="text-xs text-white/60">Soru: ${log.question}</p>
             <p class="text-xs text-white/80">Yapay Zeka: ${log.aiRes}</p>
@@ -240,7 +290,13 @@
           </div>
         </div>`).join('');
     }
-    function flushLogs() { if (confirm("Loglar silinsin mi?")) { localStorage.removeItem('aegis_logs'); renderAdminLogs(); } }
+
+    async function flushLogs() { 
+      if (confirm("Buluttaki tüm loglar silinsin mi?")) { 
+        await fetch(CLOUD_DB_URL, { method: 'POST', body: JSON.stringify([]) });
+        renderAdminLogs(); 
+      } 
+    }
   </script>
 </body>
 </html>
