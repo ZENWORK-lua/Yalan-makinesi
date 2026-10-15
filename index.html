@@ -3,351 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Aegis Biyometrik Doğrulama Sistemi</title>
+  <title>Yalan Analiz Sistemi</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Tailwind Konfigürasyonu -->
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            cyber: '#0df0a3',
-            dark: '#050b14',
-            panel: 'rgba(10, 25, 47, 0.7)'
-          },
-          fontFamily: {
-            mono: ['"Courier New"', 'Courier', 'monospace'],
-            sans: ['system-ui', '-apple-system', 'sans-serif']
-          }
-        }
-      }
+      theme: { extend: { colors: { cyber: '#0df0a3', dark: '#050b14' } } }
     }
   </script>
   <style>
-    /* Global Reset ve Kernel Seviyesi GPU Hızlandırma */
-    body {
-      background-color: #050b14;
-      color: #e2e8f0;
-      overflow: hidden;
-      touch-action: none;
-    }
-
-    /* Siber Grid Arka Plan */
-    .cyber-grid {
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background-image: 
-        linear-gradient(rgba(13, 240, 163, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(13, 240, 163, 0.1) 1px, transparent 1px);
-      background-size: 40px 40px;
-      transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-      animation: gridMove 20s linear infinite;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    @keyframes gridMove {
-      0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
-      100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); }
-    }
-
-    /* CRT Ekran Çizgileri Overlay */
-    .scanlines {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
-      background-size: 100% 4px;
-      z-index: 999;
-      pointer-events: none;
-    }
-
-    /* Yüksek Performanslı Cam Efekti */
-    .glass-panel {
-      background: rgba(5, 11, 20, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(13, 240, 163, 0.2);
-      box-shadow: 0 0 30px rgba(13, 240, 163, 0.05);
-    }
-
-    /* Parmak İzi Tarayıcı Animasyonları */
-    .fingerprint-container {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      margin: 0 auto;
-      border-radius: 50%;
-      border: 2px dashed rgba(13, 240, 163, 0.4);
-      display: flex;
-      align-items: center;
-      justify-center;
-      transition: all 0.3s ease;
-    }
-
-    .fingerprint-container.scanning {
-      border-color: #0df0a3;
-      box-shadow: 0 0 40px rgba(13, 240, 163, 0.4);
-      background: rgba(13, 240, 163, 0.1);
-    }
-
-    .scanner-line {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: #0df0a3;
-      box-shadow: 0 0 15px #0df0a3, 0 0 30px #0df0a3;
-      border-radius: 50%;
-      opacity: 0;
-      z-index: 10;
-    }
-
-    .scanning .scanner-line {
-      opacity: 1;
-      animation: scanSweep 1.5s ease-in-out infinite alternate;
-    }
-
-    @keyframes scanSweep {
-      0% { top: 5%; }
-      100% { top: 95%; }
-    }
-
-    /* Yalan Tespiti Glitch Efekti */
-    .glitch-text {
-      position: relative;
-      color: #ef4444;
-      animation: glitch-skew 1s infinite linear alternate-reverse;
-    }
-    
-    .glitch-text::before, .glitch-text::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    .glitch-text::before {
-      left: 2px;
-      text-shadow: -2px 0 #0df0a3;
-      clip: rect(44px, 450px, 56px, 0);
-      animation: glitch-anim 5s infinite linear alternate-reverse;
-    }
-    .glitch-text::after {
-      left: -2px;
-      text-shadow: -2px 0 #3b82f6;
-      clip: rect(44px, 450px, 56px, 0);
-      animation: glitch-anim2 5s infinite linear alternate-reverse;
-    }
-
-    @keyframes glitch-anim {
-      0% { clip: rect(10px, 9999px, 86px, 0); }
-      20% { clip: rect(61px, 9999px, 20px, 0); }
-      40% { clip: rect(3px, 9999px, 44px, 0); }
-      60% { clip: rect(98px, 9999px, 78px, 0); }
-      80% { clip: rect(21px, 9999px, 13px, 0); }
-      100% { clip: rect(54px, 9999px, 53px, 0); }
-    }
-    @keyframes glitch-anim2 {
-      0% { clip: rect(85px, 9999px, 16px, 0); }
-      20% { clip: rect(12px, 9999px, 64px, 0); }
-      40% { clip: rect(78px, 9999px, 3px, 0); }
-      60% { clip: rect(42px, 9999px, 99px, 0); }
-      80% { clip: rect(6px, 9999px, 32px, 0); }
-      100% { clip: rect(93px, 9999px, 87px, 0); }
-    }
+    body { background-color: #050b14; color: #e2e8f0; overflow: hidden; touch-action: none; }
+    .cyber-grid { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(rgba(13, 240, 163, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(13, 240, 163, 0.1) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px); animation: gridMove 20s linear infinite; z-index: 0; pointer-events: none; }
+    @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
+    .scanlines { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; z-index: 999; pointer-events: none; }
+    .glass-panel { background: rgba(5, 11, 20, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(13, 240, 163, 0.2); box-shadow: 0 0 30px rgba(13, 240, 163, 0.05); }
+    .fingerprint-container { position: relative; width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; border: 2px dashed rgba(13, 240, 163, 0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+    .fingerprint-container.scanning { border-color: #0df0a3; box-shadow: 0 0 40px rgba(13, 240, 163, 0.4); background: rgba(13, 240, 163, 0.1); }
+    .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #0df0a3; box-shadow: 0 0 15px #0df0a3, 0 0 30px #0df0a3; border-radius: 50%; opacity: 0; z-index: 10; }
+    .scanning .scanner-line { opacity: 1; animation: scanSweep 1.5s ease-in-out infinite alternate; }
+    @keyframes scanSweep { 0% { top: 5%; } 100% { top: 95%; } }
   </style>
 </head>
 <body class="relative flex items-center justify-center w-screen h-screen select-none">
-
-  <!-- Arka Plan Katmanları -->
   <div class="cyber-grid"></div>
   <div class="scanlines"></div>
   <div class="absolute w-[600px] h-[600px] bg-cyber/10 rounded-full blur-[120px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
-  <!-- Gizli Admin Hitbox (Sağ Üst Köşe - Genişletilmiş Alan) -->
-  <div onclick="openAdmin()" class="fixed top-0 right-0 w-32 h-32 z-50 cursor-default" style="background: transparent;"></div>
+  <!-- Gizli Admin Hitbox (Sağ üst köşe tıklandığında Alibaba şifresi ister) -->
+  <div onclick="openAdmin()" class="fixed top-0 right-0 w-32 h-32 z-50 cursor-pointer" style="background: transparent;"></div>
 
-  <!-- Ana Arayüz Kartı -->
   <main id="app-container" class="glass-panel w-full max-w-md mx-4 p-8 rounded-3xl relative z-10 overflow-hidden shadow-2xl transition-all duration-500">
-    
-    <!-- HEADER -->
     <header class="flex justify-between items-center mb-6 border-b border-cyber/20 pb-4">
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-cyber animate-pulse"></div>
-        <span class="text-cyber text-xs font-mono font-bold tracking-widest">AEGIS.CORE // v9.4</span>
+        <span class="text-cyber text-xs font-mono font-bold tracking-widest">SİSTEM // HİZMETE HAZIR</span>
       </div>
-      <div class="text-[10px] text-white/40 font-mono" id="system-time">00:00:00</div>
     </header>
 
     <!-- STEP 1: Veri Girişi -->
     <section id="step-init" class="space-y-5">
       <div>
-        <h1 class="text-2xl font-bold text-white mb-1">Kimlik Doğrulama</h1>
-        <p class="text-xs text-white/50 font-mono">Biyometrik ve nöral veri tabanı erişimi bekleniyor.</p>
+        <h1 class="text-2xl font-bold text-white mb-1">Giriş Paneli</h1>
+        <p class="text-xs text-white/50 font-mono">Yalan analizi için bilgilerinizi giriniz.</p>
       </div>
 
       <div class="space-y-4">
         <div class="relative">
-          <label class="absolute -top-2 left-3 bg-dark px-1 text-[10px] text-cyber font-mono uppercase">Denek ID / İsim</label>
-          <input id="inp-name" type="text" autocomplete="off" class="w-full bg-transparent border border-white/20 rounded-xl p-4 text-white font-mono text-sm focus:outline-none focus:border-cyber transition-colors" placeholder="Kayıtlı isminizi girin...">
+          <label class="absolute -top-2 left-3 bg-dark px-1 text-[10px] text-cyber font-mono uppercase">İSİM</label>
+          <input id="inp-name" type="text" autocomplete="off" class="w-full bg-transparent border border-white/20 rounded-xl p-4 text-white font-mono text-sm focus:outline-none focus:border-cyber transition-colors" placeholder="Adınızı girin...">
         </div>
 
         <div class="relative">
-          <label class="absolute -top-2 left-3 bg-dark px-1 text-[10px] text-cyber font-mono uppercase">Sorgu Parametresi</label>
-          <textarea id="inp-query" rows="2" class="w-full bg-transparent border border-white/20 rounded-xl p-4 text-white font-sans text-sm focus:outline-none focus:border-cyber transition-colors resize-none" placeholder="Sisteme yöneltilecek soruyu/beyanı yazın..."></textarea>
+          <label class="absolute -top-2 left-3 bg-dark px-1 text-[10px] text-cyber font-mono uppercase">SORU / CÜMLE</label>
+          <textarea id="inp-query" rows="2" class="w-full bg-transparent border border-white/20 rounded-xl p-4 text-white font-sans text-sm focus:outline-none focus:border-cyber transition-colors resize-none" placeholder="Yalan analizine sokulacak cümleyi giriniz..."></textarea>
         </div>
       </div>
 
       <button onclick="initiateScan()" class="w-full bg-cyber text-dark font-bold py-4 rounded-xl hover:bg-cyber/90 transition-all font-mono tracking-widest uppercase text-sm mt-2 relative overflow-hidden group">
         <span class="relative z-10">Sistemi Başlat</span>
-        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1s_forwards]"></div>
       </button>
     </section>
 
     <!-- STEP 2: Tarama Fazı -->
     <section id="step-scan" class="hidden flex-col items-center justify-center space-y-6 py-4">
       <div class="text-center w-full">
-        <h2 class="text-cyber text-lg font-mono font-bold animate-pulse">BİYOMETRİK ONAY GEREKİYOR</h2>
+        <h2 class="text-cyber text-lg font-mono font-bold animate-pulse">ONAY GEREKİYOR</h2>
         <p class="text-[11px] text-white/50 font-mono mt-1">Parmağınızı tarayıcıya basılı tutarak kalibrasyonu sağlayın.</p>
       </div>
-
-      <div id="scanner-pad" class="fingerprint-container cursor-pointer"
-           onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()"
-           ontouchstart="startHold(event)" ontouchend="endHold(event)">
-        <!-- SVG Parmak İzi İkonu -->
-        <svg class="w-16 h-16 text-cyber/50 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.46 6.03 1.52.25.13.36.43.23.68-.09.18-.26.27-.46.27zm-11.6 3.19C4.54 9.17 3.5 11.08 3.5 13.52c0 .28-.22.5-.5.5s-.5-.22-.5-.5C2.5 10.74 3.66 8.57 5.56 6.88c.21-.19.53-.17.72.04.19.21.17.53-.07.74zM20.5 13.52c0-2.61-1.15-4.66-3.41-6.11-.23-.15-.54-.08-.69.15-.15.23-.08.54.15.69 1.94 1.25 2.95 3.02 2.95 5.27 0 .28.22.5.5.5s.5-.22.5-.5zM12.01 6c-3.13 0-5.91 1.76-7.29 4.62-.12.25-.42.36-.67.24-.25-.12-.36-.42-.24-.67C5.41 6.86 8.54 4.9 12.01 4.9c3.48 0 6.64 1.96 8.24 5.3.12.25.01.55-.24.67-.25.12-.55.01-.67-.24-1.39-2.87-4.18-4.63-7.33-4.63zm3.76 13.91c-.34-.41-.57-1.17-.67-2.31-.05-.59-.14-1.19-.38-1.74-.46-1.04-1.35-1.78-2.71-1.78-1.36 0-2.25.75-2.71 1.78-.23.54-.33 1.13-.38 1.74-.1 1.14-.33 1.9-.67 2.31-.22.26-.2.65.06.87.26.22.65.2.87-.06.51-.59.81-1.57.94-2.88.04-.5.12-.99.31-1.41.28-.62.8-1.04 1.58-1.04.78 0 1.29.42 1.58 1.04.19.42.27.91.31 1.41.13 1.32.43 2.29.94 2.88.26.26.65.23.87-.03.22-.27.19-.66-.04-.88zm-3.76-11.83c-2.3 0-4.32 1.4-5.11 3.52-.1.26-.39.39-.65.29-.26-.1-.39-.39-.29-.65.95-2.54 3.37-4.21 6.05-4.21 2.68 0 5.1 1.67 6.05 4.21.1.26-.03.55-.29.65-.26.1-.55-.03-.65-.29-.79-2.12-2.81-3.52-5.11-3.52zm0 3c-1.35 0-2.59.83-3.14 2.09-.11.25-.41.37-.66.26-.25-.11-.37-.41-.26-.66.69-1.58 2.24-2.62 3.96-2.62s3.27 1.04 3.96 2.62c.11.25-.01.55-.26.66-.25.11-.55-.01-.66-.26-.55-1.26-1.79-2.09-3.14-2.09z"/></svg>
-        <div class="scanner-line"></div>
-      </div>
-
-      <!-- Sahte Terminal Logları -->
-      <div class="w-full h-24 bg-black/50 rounded-lg p-3 overflow-hidden border border-white/5 relative">
-        <div id="terminal-logs" class="text-[10px] font-mono text-cyber/70 space-y-1 flex flex-col justify-end h-full">
-          <div class="opacity-50">> AEGIS Sistemi Hazır. Tarama bekleniyor...</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 3: Sonuç ve Loglama Fazı -->
-    <section id="step-result" class="hidden space-y-4">
-      <div class="text-center">
-        <div id="result-status" class="text-3xl font-black tracking-tighter mb-1 uppercase" data-text=""></div>
-        <p class="text-[10px] font-mono text-white/40">GÜVENİLİRLİK İNDEKSİ: <span id="trust-index">--%</span></p>
-      </div>
-
-      <div class="bg-black/40 border-l-2 border-cyber p-4 rounded-r-xl">
-        <p class="text-[10px] text-white/30 font-mono uppercase mb-1">Algoritma Kararı:</p>
-        <p id="ai-reason" class="text-sm font-sans text-white/90 leading-relaxed"></p>
-      </div>
-
-      <div class="pt-4 border-t border-white/10">
-        <label class="block text-[10px] text-cyber font-mono uppercase mb-2">Denek Savunması Gerekli</label>
-        <textarea id="inp-story" rows="2" class="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-cyber/50 transition-colors resize-none" placeholder="Karara itiraz ediyorsanız nedenini açıklayın..."></textarea>
-        
-        <button onclick="commitLog()" class="w-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs py-3 rounded-xl mt-3 transition-colors border border-white/5">
-          Sisteme Kaydet & Kapat
-        </button>
-      </div>
-    </section>
-  </main>
-
-  <!-- GİZLİ ADMİN PANELİ -->
+      <div id="scanner-pad" class="fingerprint-container cursor-pointer" onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold(event)" ontouchend="endHold(event)">
+        <svg class="w-16 h-16 text-cyber/50 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.46 6.03 1.52.25.13.36.43.23.68-.09.18-.26.27-.46.27zm-11.6 3.19C4.54 9.17 3.5 11.08 3.5 13.52c0 .28-.22.5-.5.5s-.5-.22-.5-.5C2.5 10.74 3.66 8.57 5.56 6.88c.21-.19.53-.17.72.04.19.21.17.53-.07.74zM20.5 13.52c0-2.61-1.15-4.66-3.41-6.11-.23-.15-.54-.08-.69.15-.15.23-.08.54.15.69 1.94 1.25 2.95 3.02 2.95 5.27 0 .28.22.5.5.5s.5-.22.5-.5zM12.01 6c-3.13 0-5.91 1.76-7.29 4.62-.12.25-.42.36-.67.24-.25-.12-.36-.42-.24-.67C5.41 6.86 8.54 4.9 12.01 4.9c3.48 0 6.64 1.96 8.24 5.3.12.25.01.55-.24.67-.25.12-.55.01-.67-.24-1.39-2.87-4.18-4.63-7.33-4.63zm3.76 13.91c-.34-.41-.57-1.17-.67-2.31-.05-.59-.14-1.19-.38-1.74-.46-1.04-1.35-1.78-2.71-1.78-1.36 0-2.25.75-2
+                                                                                                             <!-- GİZLİ ADMİN PANELİ -->
   <div id="admin-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-    <div class="w-full max-w-2xl bg-dark/80 border border-cyber/30 rounded-2xl p-6 shadow-[0_0_50px_rgba(13,240,163,0.1)] flex flex-col max-h-[90vh]">
+    <div class="w-full max-w-2xl bg-dark/80 border border-cyber/30 rounded-2xl p-6 flex flex-col max-h-[90vh]">
       <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
         <div>
-          <h2 class="text-cyber font-mono font-bold text-lg">ROOT_ACCESS // SORGULAR</h2>
+          <h2 class="text-cyber font-mono font-bold text-lg">GİZLİ LOGLAR</h2>
           <p class="text-xs text-white/40 font-mono">Toplam Kayıt: <span id="log-count">0</span></p>
         </div>
         <button onclick="closeAdmin()" class="text-white/50 hover:text-white font-mono text-xl">✕</button>
       </div>
-      
-      <div id="log-container" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-        <!-- JS Dinamik İçerik -->
-      </div>
-
+      <div id="log-container" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar"></div>
       <div class="mt-6 pt-4 border-t border-white/10 text-right">
-        <button onclick="flushLogs()" class="text-red-500 hover:text-red-400 font-mono text-xs uppercase tracking-wider px-4 py-2 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">Veritabanını Temizle</button>
+        <button onclick="flushLogs()" class="text-red-500 hover:text-red-400 font-mono text-xs uppercase px-4 py-2 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">Logları Sil</button>
       </div>
     </div>
   </div>
 
   <script>
-    /*
-      SİSTEM MİMARİSİ VE BELLEK YÖNETİMİ
-      Tüm state işlemleri ve asenkron çağrılar DOM'u tıkamayacak şekilde optimize edilmiştir.
-      Hardware/Haptic API kullanımı ve Speech Synthesis asenkron olarak tetiklenir.
-    */
+    let state = { name: "", question: "", isLie: false, aiResponse: "", holdInterval: null, holdProgress: 0 };
+    const logMessages = [ "> Sensörler uyanıyor...", "> Veriler toplanıyor...", "> Analiz başladı...", "> Doğruluk payı ölçülüyor..." ];
 
-    let state = {
-      name: "",
-      question: "",
-      isLie: false,
-      aiResponse: "",
-      holdInterval: null,
-      holdProgress: 0,
-      logMessages: [
-        "> Biyometrik sensörler uyanıyor...",
-        "> Cilt direnci (GSR) ölçülüyor...",
-        "> Mikro-titreşim analizi başlatıldı...",
-        "> Oksijen satürasyonu: Normal.",
-        "> Nöral ağa veri aktarımı yapılıyor...",
-        "> Sapma tespit algoritmaları devrede...",
-        "> VERİ İŞLENİYOR..."
-      ]
-    };
-
-    // Zamanlayıcı UI
-    setInterval(() => {
-      document.getElementById('system-time').innerText = new Date().toLocaleTimeString('tr-TR', { hour12: false });
-    }, 1000);
-
-    // --- STEP 1: Başlatma ---
     function initiateScan() {
       const nameInp = document.getElementById('inp-name').value.trim();
       const queryInp = document.getElementById('inp-query').value.trim();
-      
-      if (!nameInp || !queryInp) return alert("SİSTEM UYARISI: Eksik parametre.");
-
+      if (!nameInp || !queryInp) return alert("Lütfen isim ve cümleyi eksiksiz girin.");
       state.name = nameInp;
       state.question = queryInp;
-
       document.getElementById('step-init').classList.add('hidden');
       document.getElementById('step-scan').classList.replace('hidden', 'flex');
     }
 
-    // --- STEP 2: Tarama Mantığı ---
     function startHold(e) {
-      if (e) e.preventDefault(); // Mobil dokunma çakışmalarını önle
-      
+      if (e) e.preventDefault();
       const pad = document.getElementById('scanner-pad');
       const terminal = document.getElementById('terminal-logs');
-      
       pad.classList.add('scanning');
       if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
-
       let logIndex = 0;
-      terminal.innerHTML = ""; // Terminali temizle
-
+      terminal.innerHTML = "";
       state.holdProgress = 0;
       state.holdInterval = setInterval(() => {
         state.holdProgress += 100;
-        
-        // Terminale her 400ms'de bir sahte log bas
-        if (state.holdProgress % 400 === 0 && logIndex < state.logMessages.length) {
+        if (state.holdProgress % 500 === 0 && logIndex < logMessages.length) {
           const div = document.createElement('div');
-          div.className = "opacity-0 animate-[fadeIn_0.2s_forwards] text-cyber";
-          div.innerText = state.logMessages[logIndex];
+          div.className = "text-cyber";
+          div.innerText = logMessages[logIndex];
           terminal.appendChild(div);
           logIndex++;
         }
-
-        // 2.5 saniye basılı tutulursa başarılı
-        if (state.holdProgress >= 2500) {
+        if (state.holdProgress >= 2000) {
           clearInterval(state.holdInterval);
           pad.classList.remove('scanning');
           resolveAnalysis();
@@ -359,341 +132,93 @@
       if (e) e.preventDefault();
       clearInterval(state.holdInterval);
       document.getElementById('scanner-pad').classList.remove('scanning');
-      
-      if (state.holdProgress > 0 && state.holdProgress < 2500) {
-        document.getElementById('terminal-logs').innerHTML = `<div class="text-red-500">> HATA: Tarama yarıda kesildi. Biyometrik veri yetersiz.</div>`;
-      }
     }
 
-    // --- STEP 3: API İstemi ve Sonuç ---
     async function resolveAnalysis() {
-      // Yalan ihtimalini %65 yapıyoruz, şaka daha etkili olsun
       state.isLie = Math.random() < 0.65;
-      
       document.getElementById('step-scan').classList.replace('flex', 'hidden');
       document.getElementById('step-result').classList.remove('hidden');
 
       const titleEl = document.getElementById('result-status');
       const aiReasonEl = document.getElementById('ai-reason');
-      
-      // UI hazırlanıyor
+
       if (state.isLie) {
         titleEl.innerText = "YALAN SÖYLÜYORSUN!";
-        titleEl.setAttribute('data-text', 'YALAN SÖYLÜYORSUN!');
-        titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase glitch-text";
-        document.getElementById('trust-index').innerText = Math.floor(Math.random() * 15) + "%"; // 0-15%
-        document.getElementById('trust-index').className = "text-red-500 font-bold";
+        titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase text-red-500 animate-pulse";
       } else {
         titleEl.innerText = "DOĞRU SÖYLÜYORSUN!";
-        titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase text-cyber shadow-[0_0_15px_rgba(13,240,163,0.5)]";
-        document.getElementById('trust-index').innerText = Math.floor(Math.random() * 15 + 85) + "%"; // 85-100%
-        document.getElementById('trust-index').className = "text-cyber font-bold";
+        titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase text-cyber";
       }
 
-      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Nöral ağ tespiti oluşturuluyor...</span>`;
+      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Yapay zeka analiz ediyor...</span>`;
 
-      // Pollinations API (Prompt Engineering: Keskin, sarkastik ve tek cümle)
-      const prompt = encodeURIComponent(
-        `Sen zeki, alaycı ve acımasız bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Sorduğu Soru: "${state.question}". Kararım: ${state.isLie ? 'YALAN SÖYLÜYOR' : 'DOĞRU SÖYLÜYOR'}. Bu karara neden vardığını tek, vurucu, komik ve Türkçe bir cümle ile açıkla. Fazla uzatma.`
-      );
-
+      const prompt = encodeURIComponent(`Sen komik bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Cümlesi: "${state.question}". Kararım: ${state.isLie ? 'YALAN' : 'DOĞRU'}. Bu karara komik ve kısa tek bir cümle ile Türkçe açıklama getir.`);
+      
       try {
         const res = await fetch(`https://text.pollinations.ai/${prompt}`);
         const text = await res.text();
         state.aiResponse = text;
         aiReasonEl.innerText = text;
-        speakResult((state.isLie ? "Dikkat! Yalan tespit edildi. " : "Doğrulandı. ") + text);
+        speakResult((state.isLie ? "Yalan söylüyorsun. " : "Doğru söylüyorsun. ") + text);
       } catch (err) {
-        state.aiResponse = "Sunucu bağlantısı koptu ama terleme oranından yalan söylediğin çok net.";
+        state.aiResponse = "Yalan sinyalleri bağlantıyı kopardı!";
         aiReasonEl.innerText = state.aiResponse;
       }
     }
 
-    // --- LOG YÖNETİMİ VE SIFIRLAMA ---
     function commitLog() {
       const story = document.getElementById('inp-story').value.trim();
-      
-      const payload = {
-        id: Date.now(),
-        name: state.name,
-        question: state.question,
-        verdict: state.isLie ? "YALAN" : "DOĞRU",
-        aiRes: state.aiResponse,
-        defense: story || "[Savunma girilmedi]",
-        timestamp: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-      };
-
+      const payload = { name: state.name, question: state.question, verdict: state.isLie ? "YALAN" : "DOĞRU", aiRes: state.aiResponse, defense: story || "Açıklama yok" };
       const existingLogs = JSON.parse(localStorage.getItem('aegis_logs') || '[]');
       existingLogs.unshift(payload);
       localStorage.setItem('aegis_logs', JSON.stringify(existingLogs));
 
-      // Sistemi Başlangıca Döndür
       document.getElementById('inp-name').value = "";
       document.getElementById('inp-query').value = "";
       document.getElementById('inp-story').value = "";
       document.getElementById('step-result').classList.add('hidden');
       document.getElementById('step-init').classList.remove('hidden');
-      document.getElementById('terminal-logs').innerHTML = "";
     }
 
-    // --- SES MOTORU (Web Speech API) ---
     function speakResult(text) {
       if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Önceki sesleri kes
+        window.speechSynthesis.cancel();
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'tr-TR';
-        msg.rate = 1.1; // Biraz robotik hız
-        msg.pitch = 0.8; // Hafif kalın ton
         window.speechSynthesis.speak(msg);
       }
     }
 
-    // --- GİZLİ ADMİN KONTROLCÜSÜ ---
     function openAdmin() {
-      const auth = prompt("SYSTEM_OVERRIDE_KEY:");
-      if (auth === "Alibaba") {
-        renderAdminLogs();
-        document.getElementById('admin-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-    <div class="w-full max-w-2xl bg-dark/80 border border-cyber/30 rounded-2xl p-6 shadow-[0_0_50px_rgba(13,240,163,0.1)] flex flex-col max-h-[90vh]">
-      <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
-        <div>
-          <h2 class="text-cyber font-mono font-bold text-lg">ROOT_ACCESS // SORGULAR</h2>
-          <p class="text-xs text-white/40 font-mono">Toplam Kayıt: <span id="log-count">0</span></p>
-        </div>
-        <button onclick="closeAdmin()" class="text-white/50 hover:text-white font-mono text-xl">✕</button>
-      </div>
-      
-      <div id="log-container" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-        <!-- JS Dinamik İçerik -->
-      </div>
-
-      <div class="mt-6 pt-4 border-t border-white/10 text-right">
-        <button onclick="flushLogs()" class="text-red-500 hover:text-red-400 font-mono text-xs uppercase tracking-wider px-4 py-2 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">Veritabanını Temizle</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    /*
-      SİSTEM MİMARİSİ VE BELLEK YÖNETİMİ
-      Tüm state işlemleri ve asenkron çağrılar DOM'u tıkamayacak şekilde optimize edilmiştir.
-      Hardware/Haptic API kullanımı ve Speech Synthesis asenkron olarak tetiklenir.
-    */
-
-    let state = {
-      name: "",
-      question: "",
-      isLie: false,
-      aiResponse: "",
-      holdInterval: null,
-      holdProgress: 0,
-      logMessages: [
-        "> Biyometrik sensörler uyanıyor...",
-        "> Cilt direnci (GSR) ölçülüyor...",
-        "> Mikro-titreşim analizi başlatıldı...",
-        "> Oksijen satürasyonu: Normal.",
-        "> Nöral ağa veri aktarımı yapılıyor...",
-        "> Sapma tespit algoritmaları devrede...",
-        "> VERİ İŞLENİYOR..."
-      ]
-    };
-
-    // Zamanlayıcı UI
-    setInterval(() => {
-      document.getElementById('system-time').innerText = new Date().toLocaleTimeString('tr-TR', { hour12: false });
-    }, 1000);
-
-    // --- STEP 1: Başlatma ---
-    function initiateScan() {
-      const nameInp = document.getElementById('inp-name').value.trim();
-      const queryInp = document.getElementById('inp-query').value.trim();
-      
-      if (!nameInp || !queryInp) return alert("SİSTEM UYARISI: Eksik parametre.");
-
-      state.name = nameInp;
-      state.question = queryInp;
-
-      document.getElementById('step-init').classList.add('hidden');
-      document.getElementById('step-scan').classList.replace('hidden', 'flex');
-    }
-
-    // --- STEP 2: Tarama Mantığı ---
-    function startHold(e) {
-      if (e) e.preventDefault(); // Mobil dokunma çakışmalarını önle
-      
-      const pad = document.getElementById('scanner-pad');
-      const terminal = document.getElementById('terminal-logs');
-      
-      pad.classList.add('scanning');
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
-
-      let logIndex = 0;
-      terminal.innerHTML = ""; // Terminali temizle
-
-      state.holdProgress = 0;
-      state.holdInterval = setInterval(() => {
-        state.holdProgress += 100;
-        
-        // Terminale her 400ms'de bir sahte log bas
-        if (state.holdProgress % 400 === 0 && logIndex < state.logMessages.length) {
-          const div = document.createElement('div');
-          div.className = "opacity-0 animate-[fadeIn_0.2s_forwards] text-cyber";
-          div.innerText = state.logMessages[logIndex];
-          terminal.appendChild(div);
-          logIndex++;
-        }
-
-        // 2.5 saniye basılı tutulursa başarılı
-        if (state.holdProgress >= 2500) {
-          clearInterval(state.holdInterval);
-          pad.classList.remove('scanning');
-          resolveAnalysis();
-        }
-      }, 100);
-    }
-
-    function endHold(e) {
-      if (e) e.preventDefault();
-      clearInterval(state.holdInterval);
-      document.getElementById('scanner-pad').classList.remove('scanning');
-      
-      if (state.holdProgress > 0 && state.holdProgress < 2500) {
-        document.getElementById('terminal-logs').innerHTML = `<div class="text-red-500">> HATA: Tarama yarıda kesildi. Biyometrik veri yetersiz.</div>`;
-      }
-    }
-
-    // --- STEP 3: API İstemi ve Sonuç ---
-    async function resolveAnalysis() {
-      // Yalan ihtimalini %65 yapıyoruz, şaka daha etkili olsun
-      state.isLie = Math.random() < 0.65;
-      
-      document.getElementById('step-scan').classList.replace('flex', 'hidden');
-      document.getElementById('step-result').classList.remove('hidden');
-
-      const titleEl = document.getElementById('result-status');
-      const aiReasonEl = document.getElementById('ai-reason');
-      
-      // UI hazırlanıyor
-      if (state.isLie) {
-        titleEl.innerText = "YALAN SÖYLÜYORSUN!";
-        titleEl.setAttribute('data-text', 'YALAN SÖYLÜYORSUN!');
-        titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase glitch-text";
-        document.getElementById('trust-index').innerText = Math.floor(Math.random() * 15) + "%"; // 0-15%
-        document.getElementById('trust-index').className = "text-red-500 font-bold";
-      } else {
-        titleEl.innerText = "DOĞRU SÖYLÜYORSUN!";
-        titleEl.className = "text-3xl font-black tracking-tighter mb-1 uppercase text-cyber shadow-[0_0_15px_rgba(13,240,163,0.5)]";
-        document.getElementById('trust-index').innerText = Math.floor(Math.random() * 15 + 85) + "%"; // 85-100%
-        document.getElementById('trust-index').className = "text-cyber font-bold";
-      }
-
-      aiReasonEl.innerHTML = `<span class="animate-pulse text-white/50">Nöral ağ tespiti oluşturuluyor...</span>`;
-
-      // Pollinations API (Prompt Engineering: Keskin, sarkastik ve tek cümle)
-      const prompt = encodeURIComponent(
-        `Sen zeki, alaycı ve acımasız bir yalan makinesi yapay zekasısın. Kişi adı: ${state.name}. Sorduğu Soru: "${state.question}". Kararım: ${state.isLie ? 'YALAN SÖYLÜYOR' : 'DOĞRU SÖYLÜYOR'}. Bu karara neden vardığını tek, vurucu, komik ve Türkçe bir cümle ile açıkla. Fazla uzatma.`
-      );
-
-      try {
-        const res = await fetch(`https://text.pollinations.ai/${prompt}`);
-        const text = await res.text();
-        state.aiResponse = text;
-        aiReasonEl.innerText = text;
-        speakResult((state.isLie ? "Dikkat! Yalan tespit edildi. " : "Doğrulandı. ") + text);
-      } catch (err) {
-        state.aiResponse = "Sunucu bağlantısı koptu ama terleme oranından yalan söylediğin çok net.";
-        aiReasonEl.innerText = state.aiResponse;
-      }
-    }
-
-    // --- LOG YÖNETİMİ VE SIFIRLAMA ---
-    function commitLog() {
-      const story = document.getElementById('inp-story').value.trim();
-      
-      const payload = {
-        id: Date.now(),
-        name: state.name,
-        question: state.question,
-        verdict: state.isLie ? "YALAN" : "DOĞRU",
-        aiRes: state.aiResponse,
-        defense: story || "[Savunma girilmedi]",
-        timestamp: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-      };
-
-      const existingLogs = JSON.parse(localStorage.getItem('aegis_logs') || '[]');
-      existingLogs.unshift(payload);
-      localStorage.setItem('aegis_logs', JSON.stringify(existingLogs));
-
-      // Sistemi Başlangıca Döndür
-      document.getElementById('inp-name').value = "";
-      document.getElementById('inp-query').value = "";
-      document.getElementById('inp-story').value = "";
-      document.getElementById('step-result').classList.add('hidden');
-      document.getElementById('step-init').classList.remove('hidden');
-      document.getElementById('terminal-logs').innerHTML = "";
-    }
-
-    // --- SES MOTORU (Web Speech API) ---
-    function speakResult(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Önceki sesleri kes
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'tr-TR';
-        msg.rate = 1.1; // Biraz robotik hız
-        msg.pitch = 0.8; // Hafif kalın ton
-        window.speechSynthesis.speak(msg);
-      }
-    }
-
-    // --- GİZLİ ADMİN KONTROLCÜSÜ ---
-    function openAdmin() {
-      const auth = prompt("SYSTEM_OVERRIDE_KEY:");
+      const auth = prompt("Şifre giriniz:");
       if (auth === "Alibaba") {
         renderAdminLogs();
         document.getElementById('admin-modal').classList.remove('hidden');
       } else if (auth !== null) {
-        alert("ACCESS DENIED");
+        alert("Yanlış Şifre");
       }
     }
 
-    function closeAdmin() {
-      document.getElementById('admin-modal').classList.add('hidden');
-    }
+    function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
     function renderAdminLogs() {
       const logs = JSON.parse(localStorage.getItem('aegis_logs') || '[]');
       document.getElementById('log-count').innerText = logs.length;
       const container = document.getElementById('log-container');
-      
-      if (logs.length === 0) {
-        container.innerHTML = `<div class="text-white/30 text-center py-10 font-mono text-sm">Hiçbir veri bulunamadı.</div>`;
-        return;
-      }
-
+      if (logs.length === 0) { container.innerHTML = `<div class="text-white/30 text-center py-4">Veri yok.</div>`; return; }
       container.innerHTML = logs.map(log => `
-        <div class="bg-black/50 border border-white/5 p-4 rounded-xl relative overflow-hidden group">
+        <div class="bg-black/50 border border-white/5 p-4 rounded-xl relative">
           <div class="absolute top-0 left-0 w-1 h-full ${log.verdict === 'YALAN' ? 'bg-red-500' : 'bg-cyber'}"></div>
-          <div class="flex justify-between items-start mb-2 ml-2">
-            <span class="font-bold text-white text-sm font-mono">${log.name}</span>
-            <span class="text-[10px] text-white/30 font-mono">${log.timestamp}</span>
+          <span class="font-bold text-white text-sm ml-2">${log.name}</span>
+          <div class="space-y-1 ml-2 mt-1">
+            <p class="text-xs text-white/60">Soru: ${log.question}</p>
+            <p class="text-xs text-white/80">Yapay Zeka: ${log.aiRes}</p>
+            <p class="text-xs text-amber-300 border-t border-white/5 pt-1 mt-1">Açıklama: ${log.defense}</p>
           </div>
-          <div class="space-y-1 ml-2">
-            <p class="text-xs text-white/60"><span class="text-white/40">Sorgu:</span> ${log.question}</p>
-            <p class="text-xs text-white/80"><span class="text-white/40">AI Analizi:</span> ${log.aiRes}</p>
-            <div class="mt-2 pt-2 border-t border-white/5">
-              <p class="text-xs text-amber-300/80 italic font-serif">"${log.defense}"</p>
-            </div>
-          </div>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
-
-    function flushLogs() {
-      if (confirm("DİKKAT: Tüm veritabanı silinecek. Onaylıyor musunuz?")) {
-        localStorage.removeItem('aegis_logs');
-        renderAdminLogs();
-      }
-    }
+    function flushLogs() { if (confirm("Loglar silinsin mi?")) { localStorage.removeItem('aegis_logs'); renderAdminLogs(); } }
   </script>
 </body>
-</html>
+        </html>
+          
